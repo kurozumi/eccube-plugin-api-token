@@ -9,5 +9,10 @@
     },
     "extra": {
         "code": "ApiToken42"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Plugin\\ApiToken42\\Tests\\": "Tests/"
+        }
     }
 }
