@@ -1,0 +1,13 @@
+{
+    "name": "ec-cube/apitoken42",
+    "version": "4.3.0",
+    "description": "Web API 個人用アクセストークン生成",
+    "type": "eccube-plugin",
+    "require": {
+        "ec-cube/plugin-installer": "^2.0",
+        "ec-cube/api42": "^4.3"
+    },
+    "extra": {
+        "code": "ApiToken42"
+    }
+}

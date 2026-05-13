@@ -1,0 +1,171 @@
+{% extends '@admin/default_frame.twig' %}
+{% set menus = ['setting', 'api', 'token_generator'] %}
+{% block title %}トークン生成{% endblock %}
+{% block sub_title %}Web API 管理{% endblock %}
+{% block stylesheet %}
+<style>.token-output{font-family:monospace;word-break:break-all;font-size:.85rem;}</style>
+{% endblock %}
+{% block javascript %}
+<script>
+$(function(){
+    var csrfToken = '{{ csrf_token('_token') }}';
+    var generateUrl = '{{ path('admin_api_token_generator_generate', {identifier: '__ID__'}) }}';
+
+    $(document).on('click', '.btn-generate-token', function(){
+        var identifier = $(this).data('identifier');
+        var modal = $('#tokenModal');
+
+        modal.find('.modal-title').text(identifier);
+        modal.find('#modal-body-loading').show();
+        modal.find('#modal-body-result').hide();
+        modal.find('#modal-body-error').hide();
+        modal.modal('show');
+
+        $.ajax({
+            url: generateUrl.replace('__ID__', identifier),
+            method: 'POST',
+            data: {_token: csrfToken}
+        })
+        .done(function(data){
+            modal.find('#modal-body-loading').hide();
+            if(data.error){
+                modal.find('#modal-error-message').text(data.error);
+                modal.find('#modal-body-error').show();
+                return;
+            }
+            modal.find('#modal-access-token').val(data.access_token);
+            modal.find('#modal-expires-in').text(data.expires_in);
+            if(data.refresh_token){
+                modal.find('#modal-refresh-token').val(data.refresh_token);
+                modal.find('#modal-refresh-token-row').show();
+            } else {
+                modal.find('#modal-refresh-token-row').hide();
+            }
+            modal.find('#modal-body-result').show();
+        })
+        .fail(function(xhr){
+            var msg = 'エラーが発生しました';
+            try{ msg = JSON.parse(xhr.responseText).error || msg; }catch(e){}
+            modal.find('#modal-body-loading').hide();
+            modal.find('#modal-error-message').text(msg);
+            modal.find('#modal-body-error').show();
+        });
+    });
+
+    $(document).on('click', '.btn-copy', function(){
+        var btn = $(this);
+        var val = $('#' + btn.data('target')).val();
+        if(navigator.clipboard && window.isSecureContext){
+            navigator.clipboard.writeText(val).then(function(){
+                btn.text('コピー済み');
+                setTimeout(function(){ btn.text('コピー'); }, 2000);
+            });
+        } else {
+            var el = document.createElement('textarea');
+            el.value = val;
+            el.style.cssText = 'position:fixed;opacity:0';
+            document.body.appendChild(el);
+            el.focus();
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            btn.text('コピー済み');
+            setTimeout(function(){ btn.text('コピー'); }, 2000);
+        }
+    });
+});
+</script>
+{% endblock javascript %}
+{% block main %}
+<div class="c-contentsArea__cols"><div class="c-contentsArea__primaryCol"><div class="c-primaryCol">
+
+<div class="card rounded border-0 mb-4">
+    <div class="card-header"><span>パーソナルアクセストークン生成</span></div>
+    <div class="card-body"><p class="text-muted mb-0">OAuth2 クライアントに対してアクセストークンとリフレッシュトークンを直接生成します。<br>対象クライアントには <code>authorization_code</code> グラントとリダイレクト URI の設定が必要です。</p></div>
+</div>
+
+{% if clients is empty %}
+    <div class="alert alert-info">OAuth2 クライアントが登録されていません。<a href="{{ url('admin_api_oauth_new') }}">クライアントを登録する</a></div>
+{% else %}
+<div class="card rounded border-0 mb-4">
+    <div class="card-body p-0">
+        <table class="table table-striped mb-0">
+            <thead>
+                <tr>
+                    <th>クライアントID</th>
+                    <th>グラント</th>
+                    <th>スコープ</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+    {% for client in clients %}
+        {% set grants = client.grants|map(g => g ~ '') %}
+        {% set hasAuthCode = 'authorization_code' in grants %}
+        {% set hasRedirectUri = client.redirectUris|length > 0 %}
+                <tr>
+                    <td class="align-middle fw-bold">{{ client.identifier }}</td>
+                    <td class="align-middle">{% for grant in grants|filter(g => g != 'refresh_token') %}<span class="badge bg-secondary me-1">{{ grant }}</span>{% endfor %}</td>
+                    <td class="align-middle">{% if client.scopes|length > 0 %}{% for scope in client.scopes %}<code>{{ scope }}</code>{% if not loop.last %}, {% endif %}{% endfor %}{% else %}<span class="text-muted">-</span>{% endif %}</td>
+                    <td class="align-middle">
+                        {% if not hasAuthCode %}
+                            <span class="text-warning small"><i class="fa fa-exclamation-triangle"></i> authorization_code グラント未設定</span>
+                        {% elseif not hasRedirectUri %}
+                            <span class="text-warning small"><i class="fa fa-exclamation-triangle"></i> リダイレクト URI 未設定</span>
+                        {% else %}
+                            <button class="btn btn-ec-regular btn-generate-token" data-identifier="{{ client.identifier }}">トークン生成</button>
+                        {% endif %}
+                    </td>
+                </tr>
+    {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+</div></div></div>
+
+{# トークン表示モーダル #}
+<div class="modal fade" id="tokenModal" tabindex="-1" aria-labelledby="tokenModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tokenModalLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="modal-body-loading" class="text-center py-4">
+                    <div class="spinner-border text-secondary" role="status"></div>
+                    <p class="mt-2 text-muted">生成中...</p>
+                </div>
+                <div id="modal-body-error" style="display:none;">
+                    <div class="alert alert-danger mb-0">
+                        <i class="fa fa-exclamation-circle me-1"></i><span id="modal-error-message"></span>
+                    </div>
+                </div>
+                <div id="modal-body-result" style="display:none;">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">アクセストークン <small class="text-muted" id="modal-expires-in-label">（有効期限: <span id="modal-expires-in"></span>秒）</small></label>
+                        <div class="input-group">
+                            <input type="text" class="form-control token-output" id="modal-access-token" readonly>
+                            <button class="btn btn-outline-secondary btn-copy" data-target="modal-access-token">コピー</button>
+                        </div>
+                    </div>
+                    <div id="modal-refresh-token-row" class="mb-3">
+                        <label class="form-label fw-bold">リフレッシュトークン</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control token-output" id="modal-refresh-token" readonly>
+                            <button class="btn btn-outline-secondary btn-copy" data-target="modal-refresh-token">コピー</button>
+                        </div>
+                    </div>
+                    <p class="text-muted small mb-0"><i class="fa fa-info-circle me-1"></i>トークンはこの画面にのみ表示されます。安全な場所に保存してください。</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

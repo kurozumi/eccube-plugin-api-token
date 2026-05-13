@@ -1,0 +1,4 @@
+api:
+  admin:
+    token_generator:
+      management: トークン生成
