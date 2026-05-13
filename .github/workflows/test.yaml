@@ -59,6 +59,9 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
+      - name: Clone dependent plugin
+        run: git clone https://github.com/EC-CUBE/eccube-api4 app/Plugin/Api42
+
       - uses: kurozumi/eccube-plugin-test@main
         with:
           plugin-code: ${{ env.PLUGIN_CODE }}
