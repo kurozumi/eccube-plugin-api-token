@@ -1,7 +1,7 @@
 {% extends '@admin/default_frame.twig' %}
 {% set menus = ['setting', 'api', 'token_generator'] %}
 {% block title %}トークン生成{% endblock %}
-{% block sub_title %}Web API 管理{% endblock %}
+{% block sub_title %}{{ 'api.admin.management'|trans }}{% endblock %}
 {% block stylesheet %}
 <style>.token-output{font-family:monospace;word-break:break-all;font-size:.85rem;}</style>
 {% endblock %}
