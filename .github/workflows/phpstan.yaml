@@ -2,8 +2,8 @@ name: PHPStan
 on: [ workflow_dispatch, pull_request ]
 
 env:
-  PLUGIN_CODE: ApiToken42
-  PLUGIN_PACKAGE_NAME: 'ec-cube/apitoken42'
+  PLUGIN_CODE: ApiToken
+  PLUGIN_PACKAGE_NAME: 'ec-cube/apitoken'
 
 jobs:
   phpstan:

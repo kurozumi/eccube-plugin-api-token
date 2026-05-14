@@ -5,7 +5,7 @@ if (php_sapi_name() !== 'cli') {
 }
 
 $header = <<<EOL
-This file is part of ApiToken42
+This file is part of ApiToken
 
 Copyright(c) Akira Kurozumi <info@a-zumi.net>
 
