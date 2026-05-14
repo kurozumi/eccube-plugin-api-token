@@ -61,9 +61,9 @@ jobs:
 
       - name: Clone and archive dependent plugin
         run: |
-          git clone https://github.com/EC-CUBE/eccube-api4 app/Plugin/Api42
+          git clone https://github.com/EC-CUBE/eccube-api4 /tmp/Api42
           mkdir -p /tmp/repos
-          cd app/Plugin/Api42 && tar cvzf /tmp/repos/Api42.tgz ./*
+          cd /tmp/Api42 && tar cvzf /tmp/repos/Api42.tgz ./*
 
       - uses: kurozumi/eccube-plugin-test@main
         with:
