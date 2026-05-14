@@ -47,4 +47,3 @@ jobs:
           plugin-package-name: ${{ env.PLUGIN_PACKAGE_NAME }}
           dependency-plugins-enable: |
             bin/console eccube:plugin:enable --code Api42
-            composer config --no-interaction allow-plugins.symfony/flex false
