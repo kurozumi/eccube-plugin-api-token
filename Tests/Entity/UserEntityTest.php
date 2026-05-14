@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of ApiToken42
+ * This file is part of ApiToken
  *
  * Copyright(c) Akira Kurozumi <info@a-zumi.net>
  *
@@ -11,10 +11,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\ApiToken42\Tests\Entity;
+namespace Plugin\ApiToken\Tests\Entity;
 
 use PHPUnit\Framework\TestCase;
-use Plugin\ApiToken42\Entity\UserEntity;
+use Plugin\ApiToken\Entity\UserEntity;
 
 class UserEntityTest extends TestCase
 {

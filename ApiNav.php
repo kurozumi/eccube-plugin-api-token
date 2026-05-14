@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of ApiToken42
+ * This file is part of ApiToken
  *
  * Copyright(c) Akira Kurozumi <info@a-zumi.net>
  *
@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\ApiToken42;
+namespace Plugin\ApiToken;
 
 use Eccube\Common\EccubeNav;
 

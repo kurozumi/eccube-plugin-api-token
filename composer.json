@@ -1,5 +1,5 @@
 {
-    "name": "ec-cube/apitoken42",
+    "name": "ec-cube/apitoken",
     "version": "4.3.0",
     "description": "Web API 個人用アクセストークン生成",
     "type": "eccube-plugin",
@@ -8,6 +8,6 @@
         "ec-cube/api42": "^4.3"
     },
     "extra": {
-        "code": "ApiToken42"
+        "code": "ApiToken"
     }
 }

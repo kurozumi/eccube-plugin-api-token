@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of ApiToken42
+ * This file is part of ApiToken
  *
  * Copyright(c) Akira Kurozumi <info@a-zumi.net>
  *
