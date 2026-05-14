@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This file is part of ApiToken42
+ *
+ * Copyright(c) Akira Kurozumi <info@a-zumi.net>
+ *
+ * https://a-zumi.net
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Plugin\ApiToken42\Controller\Admin;
 
 use Eccube\Controller\AbstractController;
@@ -24,6 +35,7 @@ class TokenGeneratorController extends AbstractController
 
     /**
      * @Route("/%eccube_admin_route%/api/token-generator", name="admin_api_token_generator", methods={"GET"})
+     *
      * @Template("@ApiToken42/admin/TokenGenerator/index.twig")
      */
     public function index(): array

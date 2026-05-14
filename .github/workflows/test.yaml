@@ -59,7 +59,17 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
+      - name: Clone and archive dependent plugin
+        run: |
+          git clone https://github.com/EC-CUBE/eccube-api4 /tmp/Api42
+          mkdir -p /tmp/repos
+          cd /tmp/Api42 && tar cvzf /tmp/repos/Api42.tgz ./*
+
       - uses: kurozumi/eccube-plugin-test@main
         with:
           plugin-code: ${{ env.PLUGIN_CODE }}
           plugin-package-name: ${{ env.PLUGIN_PACKAGE_NAME }}
+          dependency-plugins-enable: |
+            bin/console eccube:plugin:enable --code Api42
+          dependency-plugins-disable: |
+            bin/console eccube:plugin:disable --code Api42
