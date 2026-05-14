@@ -39,7 +39,7 @@ jobs:
         run: |
           git clone https://github.com/EC-CUBE/eccube-api4 app/Plugin/Api42
           mkdir -p /tmp/repos
-          tar cvzf /tmp/repos/Api42.tgz -C app/Plugin/Api42 .
+          cd app/Plugin/Api42 && tar cvzf /tmp/repos/Api42.tgz ./*
 
       - uses: kurozumi/eccube-plugin-phpstan@main
         with:
